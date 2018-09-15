@@ -1,3 +1,10 @@
+# Michael Rapp
+
+# This program provides two sets the user can perform the following operations on
+# Union
+# Intersection
+# Difference (Note that it is only A - B)
+
 import re
 import time
 
@@ -12,6 +19,8 @@ def main():
 
 
 def display_instructions():
+    # Display instructions for user
+
     intro = "\nWelcome! \nYou have two sets. \nA = %s" % set_a + " \nB = %s" % set_b
     instruct = "\nPlease enter one of the following operations to perform on the sets"
     union = "Union"
@@ -26,12 +35,24 @@ def display_instructions():
 
 
 def display_keyboard_interrupt_message():
+    # if the user enters a keyboard interrupt, display a message and terminate
+
     message = "\nI suppose we'll just have to shut it down then. \nOne moment please."
 
     print(message)
 
 
+def display_io_error_message():
+    # if the an IO error has occurred, alert user
+
+    message = "\nIt looks like there was something wrong with what was entered."
+
+    print(message)
+
+
 def get_user_input():
+    # try to get the user input
+
     prompt = "\nPlease enter the opperation you would like to perform: "
 
     try:
@@ -41,9 +62,15 @@ def get_user_input():
         display_keyboard_interrupt_message()
         time.sleep(3)
         exit(1)
+    except IOError:
+        display_io_error_message()
+        time.sleep(3)
+        exit(1)
 
 
 def process_user_input(input_string):
+    # take the user input and match it to operation to perform
+
     union_pattern = re.compile("[uU][nN][iI][oO][nN]")
     intersection_pattern = re.compile("[iI][nN][tT][eE][rR][sS][eE][cC][tT][iI][oO][nN]")
     difference_pattern = re.compile("[dD][iI][fF][fF][eE][rR][eE][nN][cC][eE]")
@@ -60,13 +87,20 @@ def process_user_input(input_string):
             display_keyboard_interrupt_message()
             time.sleep(3)
             exit(1)
-
+        except IOError:
+            display_io_error_message()
+            time.sleep(3)
+            exit(1)
     elif intersection_pattern.search(input_string):
         print(get_intersection(set_a, set_b))
         try:
             input_string = raw_input(loop_prompt)
         except KeyboardInterrupt:
             display_keyboard_interrupt_message()
+            time.sleep(3)
+            exit(1)
+        except IOError:
+            display_io_error_message()
             time.sleep(3)
             exit(1)
     elif difference_pattern.search(input_string) or alternate_difference_pattern.search(input_string):
@@ -77,14 +111,22 @@ def process_user_input(input_string):
             display_keyboard_interrupt_message()
             time.sleep(3)
             exit(1)
+        except IOError:
+            display_io_error_message()
+            time.sleep(3)
+            exit(1)
     elif quit_pattern.search(input_string):
         exit(0)
     else:
-        fail_prompt = "Sorry %s" % input_string + " is not a recognized command. Please enter Union, Intersection, or Difference (or Quit to exit): "
+        fail_prompt = "Sorry %s" % input_string + " is not a recognized command. \nPlease enter Union, Intersection, or Difference (or Quit to exit): "
         try:
             input_string = raw_input(fail_prompt)
         except KeyboardInterrupt:
             display_keyboard_interrupt_message()
+            time.sleep(3)
+            exit(1)
+        except IOError:
+            display_io_error_message()
             time.sleep(3)
             exit(1)
 
@@ -92,6 +134,7 @@ def process_user_input(input_string):
 
 
 def get_union(set_a, set_b):
+    # get the union of the sets
 
     set_c = []
 
@@ -106,6 +149,7 @@ def get_union(set_a, set_b):
 
 
 def get_intersection(set_a, set_b):
+    # get the intersection of the sets
 
     set_c = []
 
@@ -116,7 +160,7 @@ def get_intersection(set_a, set_b):
     for element in set_b:
         if set_a.__contains__(element):
             if set_c.__contains__(element):
-                break
+                continue
             else:
                 set_c.append(element)
 
@@ -125,6 +169,7 @@ def get_intersection(set_a, set_b):
 
 
 def get_difference(set_a, set_b):
+    # get the difference of the sets (A - B only)
 
     set_c = []
 
